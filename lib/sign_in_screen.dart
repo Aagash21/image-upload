@@ -8,7 +8,25 @@ class SignInScreen extends StatelessWidget {
         title: Text('Sign In'),
       ),
       body: Center(
-        child: Text('Sign In Screen'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Sign In Screen'),
+            SizedBox(height: 20), // Add some spacing
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/sign-up'); // Navigate to sign-up
+              },
+              child: Text('Go to Sign Up'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/home'); // Navigate to home
+              },
+              child: Text('Go to Home'),
+            ),
+          ],
+        ),
       ),
     );
   }
