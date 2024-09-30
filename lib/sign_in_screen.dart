@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'sign_up_screen.dart'; // Ensure this import is present
+import 'home_screen.dart'; // Ensure this import is present
 
 class SignInScreen extends StatelessWidget {
   @override
@@ -11,17 +13,23 @@ class SignInScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Sign In Screen'),
-            SizedBox(height: 20), // Add some spacing
+            Text('Sign In Screen', style: TextStyle(fontSize: 24)),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/sign-up'); // Navigate to sign-up
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                );
               },
               child: Text('Go to Sign Up'),
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/home'); // Navigate to home
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
               },
               child: Text('Go to Home'),
             ),
