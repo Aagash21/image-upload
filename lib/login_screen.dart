@@ -1,7 +1,8 @@
+// login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'sign_up_screen.dart'; // Import SignUpScreen
-import 'home_screen.dart'; // Import HomeScreen
+import 'signup_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,20 +10,23 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _auth = FirebaseAuth.instance;
 
   Future<void> _login() async {
     try {
       await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
-      // On successful login, navigate to HomeScreen (optional as it's handled by StreamBuilder)
-    } catch (e) {
-      // Navigate to SignUpScreen on error
       Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    } catch (e) {
+      print("Login Error: $e");
+      // Navigate to SignUp if login fails
+      Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => SignUpScreen()),
       );
     }
@@ -35,6 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _emailController,
@@ -50,14 +55,13 @@ class _LoginScreenState extends State<LoginScreen> {
               onPressed: _login,
               child: Text('Login'),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
+                Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => SignUpScreen()),
                 );
               },
-              child: Text('Sign Up'),
+              child: Text('Create an account'),
             ),
           ],
         ),
