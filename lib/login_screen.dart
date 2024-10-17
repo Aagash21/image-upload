@@ -1,6 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'upload_image_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'sign_up_screen.dart'; // Import SignUpScreen
+import 'home_screen.dart'; // Import HomeScreen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,28 +12,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  
+
   Future<void> _login() async {
     try {
-      UserCredential user = await _auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       );
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => UploadImageScreen()));
+      // On successful login, navigate to HomeScreen (optional as it's handled by StreamBuilder)
     } catch (e) {
-      print(e); // Handle error
-    }
-  }
-
-  Future<void> _signup() async {
-    try {
-      UserCredential user = await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+      // Navigate to SignUpScreen on error
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => SignUpScreen()),
       );
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => UploadImageScreen()));
-    } catch (e) {
-      print(e); // Handle error
     }
   }
 
@@ -59,7 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text('Login'),
             ),
             ElevatedButton(
-              onPressed: _signup,
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                );
+              },
               child: Text('Sign Up'),
             ),
           ],

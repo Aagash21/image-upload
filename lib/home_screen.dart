@@ -1,68 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'upload_image_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
+import 'login_screen.dart'; // Import LoginScreen
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  File? _image;
-
-  Future<void> _uploadImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await showDialog<XFile?>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Select Image Source'),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                final file = await picker.pickImage(source: ImageSource.camera);
-                Navigator.pop(context, file);
-              },
-              child: Text('Camera'),
-            ),
-            TextButton(
-              onPressed: () async {
-                final file = await picker.pickImage(source: ImageSource.gallery);
-                Navigator.pop(context, file);
-              },
-              child: Text('Gallery'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home Screen'),
+        title: Text('Home'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              FirebaseAuth.instance.signOut(); // Sign out
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+            },
+          ),
+        ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _image == null
-                ? Text('No image selected.')
-                : Image.file(_image!, height: 200), // Display the selected image
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _uploadImage,
-              child: Text('Upload Image'),
-            ),
-          ],
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UploadImageScreen()),
+            );
+          },
+          child: Text('Upload Image'),
         ),
       ),
     );

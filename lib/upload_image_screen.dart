@@ -15,9 +15,11 @@ class _UploadImageScreenState extends State<UploadImageScreen> {
 
   Future<void> _pickImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = File(pickedFile!.path);
-    });
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   Future<void> _uploadImage() async {
