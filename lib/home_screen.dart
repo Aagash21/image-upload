@@ -1,6 +1,4 @@
-// home_screen.dart
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -11,31 +9,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
-  File? _image;
 
-  Future<void> _uploadImage() async {
-    if (_image == null) return;
+  Future<void> getImage() async {
+    final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-    try {
-      // Create a reference to the Firebase Storage
-      final storageRef = FirebaseStorage.instance.ref().child('uploads/${DateTime.now().toString()}');
-      await storageRef.putFile(_image!);
-      final downloadUrl = await storageRef.getDownloadURL();
-      print('File uploaded at: $downloadUrl');
-      // Handle post-upload logic here (e.g., save download URL to Firestore)
-    } catch (e) {
-      print("Upload Error: $e");
-    }
-  }
-
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.getImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+      // Use the picked file (e.g., upload it or display it)
+      print('Picked image: ${pickedFile.path}');
+    } else {
+      print('No image selected.');
     }
   }
 
@@ -44,36 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Home Screen'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () async {
-              await _auth.signOut();
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-              );
-            },
-          ),
-        ],
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _image == null
-                ? Text('No image selected.')
-                : Image.file(_image!),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Pick Image'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _uploadImage,
-              child: Text('Upload Image'),
-            ),
-          ],
+        child: ElevatedButton(
+          onPressed: getImage,
+          child: Text('Upload Image'),
         ),
       ),
     );

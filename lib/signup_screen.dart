@@ -1,7 +1,5 @@
-// signup_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -9,21 +7,21 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  Future<void> _signUp() async {
+  void _signUp() async {
     try {
       await _auth.createUserWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: _emailController.text,
+        password: _passwordController.text,
       );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+      // After signing up, navigate to the home screen
+      Navigator.pushReplacementNamed(context, '/home'); // Make sure you have a route defined for this
     } catch (e) {
-      print("Sign Up Error: $e");
+      // Handle error
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     }
   }
 
@@ -34,8 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
@@ -45,11 +42,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _signUp,
-              child: Text('Sign Up'),
-            ),
+            ElevatedButton(onPressed: _signUp, child: Text('Sign Up')),
           ],
         ),
       ),

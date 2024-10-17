@@ -1,8 +1,6 @@
-// login_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'signup_screen.dart';
-import 'home_screen.dart';
+import 'signup_screen.dart'; // Import your signup screen
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,25 +8,21 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
-
-  Future<void> _login() async {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  
+  void _signIn() async {
     try {
       await _auth.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
+        email: _emailController.text,
+        password: _passwordController.text,
       );
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      // Navigate to home screen (you need to create it)
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      print("Login Error: $e");
-      // Navigate to SignUp if login fails
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => SignUpScreen()),
-      );
+      // Handle error (show error message)
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     }
   }
 
@@ -39,8 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
@@ -50,18 +43,12 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Login'),
-            ),
+            ElevatedButton(onPressed: _signIn, child: Text('Sign In')),
             TextButton(
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen()));
               },
-              child: Text('Create an account'),
+              child: Text('Don\'t have an account? Sign Up'),
             ),
           ],
         ),

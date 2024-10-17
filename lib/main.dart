@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart'; // This is automatically generated when you configure Firebase
-import 'login_screen.dart';
-import 'signup_screen.dart';
-import 'home_screen.dart';
+import 'firebase_options.dart'; // Ensure this is generated properly
+import 'login_screen.dart'; // Adjust as per your files
+import 'signup_screen.dart'; // Adjust as per your files
+import 'home_screen.dart'; // Adjust as per your files
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform, // Make sure this is set up correctly
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform); // Make sure you have this line if using Firebase
   runApp(MyApp());
 }
 
@@ -17,9 +15,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Firebase Auth',
+      title: 'New Image Upload App',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: MainScreen(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MainScreen(), // Define your MainScreen widget here
+        '/login': (context) => LoginScreen(),
+        '/signup': (context) => SignUpScreen(),
+        '/home': (context) => HomeScreen(),
+      },
     );
   }
 }
@@ -32,23 +36,16 @@ class MainScreen extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+          children: <Widget>[
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => LoginScreen()),
-                );
+                Navigator.pushNamed(context, '/login'); // Navigate to login
               },
               child: Text('Sign In'),
             ),
-            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
-                );
+                Navigator.pushNamed(context, '/signup'); // Navigate to signup
               },
               child: Text('Sign Up'),
             ),
